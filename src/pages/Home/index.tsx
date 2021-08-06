@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import * as Location from "expo-location";
 import { API_KEY } from "@env";
 import { WeatherInfo } from "../../components/WeatherInfo";
+import { UnitsPicker } from "../../components/UnitsPicker";
 
 const baseURL = "https://api.openweathermap.org/data/2.5/weather";
 
@@ -13,9 +14,11 @@ export function Home() {
 
   useEffect(() => {
     load();
-  }, []);
+  }, [unitsSystem]);
 
   async function load() {
+    setCurrentWeather(null);
+    setErrorMsg(null);
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
 
@@ -39,25 +42,21 @@ export function Home() {
     } catch (e) {}
   }
 
-  if (currentWeather) {
-    const {
-      main: { temp },
-    } = currentWeather;
-
-    return (
-      <View style={styles.container}>
+  return (
+    <View style={styles.container}>
+      {currentWeather && (
         <View style={styles.main}>
+          <UnitsPicker
+            unitsSystem={unitsSystem}
+            setUnitsSystem={setUnitsSystem}
+          />
           <WeatherInfo currentWeather={currentWeather} />
         </View>
-      </View>
-    );
-  } else {
-    return (
-      <View style={styles.container}>
-        <Text>{errorMsg}</Text>
-      </View>
-    );
-  }
+      )}
+      {errorMsg && <Text>{errorMsg}</Text>}
+      {!currentWeather && !errorMsg && <ActivityIndicator />}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
