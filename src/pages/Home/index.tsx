@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import * as Location from "expo-location";
+
 import { API_KEY } from "@env";
 
 import { WeatherInfo } from "../../components/WeatherInfo";
 import { UnitsPicker } from "../../components/UnitsPicker";
 import { ReloadIcon } from "../../components/ReloadIcon";
+import { WeatherDetails } from "../../components/WeatherDetails";
+
 import { colors } from "../../utils";
 
 const baseURL = "https://api.openweathermap.org/data/2.5/weather";
@@ -48,14 +51,17 @@ export function Home() {
   return (
     <View style={styles.container}>
       {currentWeather && (
-        <View style={styles.main}>
-          <UnitsPicker
-            unitsSystem={unitsSystem}
-            setUnitsSystem={setUnitsSystem}
-          />
-          <ReloadIcon load={load} />
-          <WeatherInfo currentWeather={currentWeather} />
-        </View>
+        <>
+          <View style={styles.main}>
+            <UnitsPicker
+              unitsSystem={unitsSystem}
+              setUnitsSystem={setUnitsSystem}
+            />
+            <ReloadIcon load={load} />
+            <WeatherInfo currentWeather={currentWeather} />
+          </View>
+          <WeatherDetails currentWeather={currentWeather} unitsSystem={unitsSystem} />
+        </>
       )}
       {errorMsg && <Text>{errorMsg}</Text>}
       {!currentWeather && !errorMsg && <ActivityIndicator size="large" color={colors.PRIMARY_COLOR} />}
