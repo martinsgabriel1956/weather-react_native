@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
         top: -20,
       },
       android: {
-        top: 70,
+        top: 40,
       }
     }),
     left: 20,
