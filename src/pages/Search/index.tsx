@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TextInput, ScrollView } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { RectButton } from "react-native-gesture-handler";
+import * as Location from "expo-location";
 
 import { colors } from "../../utils";
 import { PreviousSearch } from "../../components/PreviousSearch";
@@ -14,6 +15,8 @@ const baseURL = `https://api.opencagedata.com/geocode/v1/json`;
 export function Search() {
   const [location, setLocation] = useState<string>();
   const [stateInfo, setStateInfo] = useState<any>();
+  const [coordsInfo, setCoordsInfo] = useState<any>();
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   async function handleSearch() {
     try {
@@ -27,6 +30,31 @@ export function Search() {
     } catch (e) {
       return "Não carregou nada";
     }
+  }
+  async function handleGetCoords() {
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status !== "granted")
+        setErrorMsg("Access to location is needed to run the app!");
+
+      const location = await Location.getCurrentPositionAsync();
+
+      const { latitude, longitude } = location.coords;
+
+      let res = await fetch(`${baseURL}?q=${latitude}+${longitude}&key=${GEO_API_KEY}`);
+
+      alert(`${latitude}, ${longitude}`)
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setCoordsInfo(data);
+      }
+    } catch (e) {
+      return "Não carregou nada";
+    }
+  
   }
 
   return (
@@ -43,7 +71,7 @@ export function Search() {
             Submit
           </Text>
         </RectButton>
-        <RectButton style={styles.button}>
+        <RectButton onPress={handleGetCoords} style={styles.button}>
           <MaterialCommunityIcons
             name="crosshairs-gps"
             size={22}
@@ -54,6 +82,7 @@ export function Search() {
       <View>
         <Text style={styles.textPreviousSearch}>Previous Searches</Text>
         {stateInfo && <PreviousSearch data={stateInfo} />}
+        {coordsInfo && <PreviousSearch data={coordsInfo} />}
       </View>
     </View>
   );
