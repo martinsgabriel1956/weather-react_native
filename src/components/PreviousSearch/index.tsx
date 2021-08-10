@@ -1,20 +1,31 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { RectButton } from 'react-native-gesture-handler';
 
 import { colors } from "../../utils";
 const { PRIMARY_COLOR, SECONDARY_COLOR, BORDER_COLOR } = colors;
 
-export function PreviousSearch() {
+export function PreviousSearch({ data }: any) {
+  const { results: [
+    {
+      components: {
+        state, 
+        state_code,
+        country
+      }
+    }
+  ]} = data;
+
   return (
     <View style={styles.container}>
       <View style={styles.stateContainer}>
-        <Text style={styles.state}>Rio de Janeiro</Text>
-        <Text style={styles.stateInfo}>RJ, Brazil</Text>
+        <Text style={styles.state}>{state}</Text>
+        <Text style={styles.stateInfo}>{state_code}, {country}  </Text>
       </View>
-      <TouchableOpacity>
+      <RectButton>
         <AntDesign name="arrowright" size={32} color={PRIMARY_COLOR} />
-      </TouchableOpacity>
+      </RectButton>
     </View>
   );
 }

@@ -8,7 +8,7 @@ module.exports = function (api) {
         {
           moduleName: "@env",
           path: ".env",
-          whitelist: ["API_KEY"],
+          whitelist: ["API_KEY", "GEO_API_KEY"],
           allowUndefined: false,
         },
       ],
