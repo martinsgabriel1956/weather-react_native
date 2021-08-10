@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-nativ
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { colors } from "../../utils";
+import { PreviousSearch } from '../../components/PreviousSearch';
 const { PRIMARY_COLOR, SECONDARY_COLOR, BORDER_COLOR } = colors;
 
 export function Search() {
@@ -22,6 +23,9 @@ export function Search() {
         <Text style={styles.textPreviousSearch}>
           Previous Searches
         </Text>
+        <PreviousSearch />
+        <PreviousSearch />
+        <PreviousSearch />
       </View>
     </View>
   );
@@ -30,8 +34,8 @@ export function Search() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     backgroundColor: '#FFF',
+    marginTop: 60,
   },
   title: {
     textAlign: 'left',
@@ -57,7 +61,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: PRIMARY_COLOR,
     width: 118,
-    borderRadius: 6,
+    borderRadius: 8,
     paddingHorizontal: 20,
     paddingVertical: 14,
     marginRight: 10,
