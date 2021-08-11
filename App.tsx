@@ -1,14 +1,18 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
+import { Provider } from "react-redux";
 
-import { Home } from "./src/pages/Home";
-import { Search } from "./src/pages/Search";
+import { store } from "./src/store";
+
+import { Routes } from "./src/routes";
 
 export default function App() {
   return (
     <>
-      <StatusBar style="auto" />
-      <Search />
+      <Provider store={store}>
+        <StatusBar style="auto" />
+        <Routes />
+      </Provider>
     </>
   );
 }

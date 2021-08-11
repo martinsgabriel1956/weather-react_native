@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { View, Text, StyleSheet, TextInput, ScrollView } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { RectButton } from "react-native-gesture-handler";
@@ -6,6 +7,8 @@ import * as Location from "expo-location";
 
 import { colors } from "../../utils";
 import { PreviousSearch } from "../../components/PreviousSearch";
+import { geoActions } from "../../store/geoCoords";
+
 const { PRIMARY_COLOR, SECONDARY_COLOR, BORDER_COLOR } = colors;
 
 import { GEO_API_KEY } from "@env";
@@ -13,6 +16,8 @@ import { GEO_API_KEY } from "@env";
 const baseURL = `https://api.opencagedata.com/geocode/v1/json`;
 
 export function Search() {
+  const dispatch = useDispatch();
+
   const [location, setLocation] = useState<string>();
   const [stateInfo, setStateInfo] = useState<any>();
   const [coordsInfo, setCoordsInfo] = useState<any>();
@@ -21,11 +26,11 @@ export function Search() {
   async function handleSearch() {
     try {
       let res = await fetch(`${baseURL}?q=${location}&key=${GEO_API_KEY}`);
-      const data = await res.json();
-      console.log(data);
+      const resData = await res.json();
 
       if (res.ok) {
-        setStateInfo(data);
+        setStateInfo(resData);
+        dispatch(geoActions.locationForSubmit({ data: stateInfo }));
       }
     } catch (e) {
       return "Não carregou nada";
@@ -42,19 +47,19 @@ export function Search() {
 
       const { latitude, longitude } = location.coords;
 
-      let res = await fetch(`${baseURL}?q=${latitude}+${longitude}&key=${GEO_API_KEY}`);
+      let res = await fetch(
+        `${baseURL}?q=${latitude}+${longitude}&key=${GEO_API_KEY}`
+      );
 
-      alert(`${latitude}, ${longitude}`)
-
-      const data = await res.json();
+      const resData = await res.json();
 
       if (res.ok) {
-        setCoordsInfo(data);
+        setCoordsInfo(resData);
+        dispatch(geoActions.locationForCoords({ data: coordsInfo }));
       }
     } catch (e) {
       return "Não carregou nada";
     }
-  
   }
 
   return (
@@ -81,8 +86,10 @@ export function Search() {
       </View>
       <View>
         <Text style={styles.textPreviousSearch}>Previous Searches</Text>
-        {stateInfo && <PreviousSearch data={stateInfo} />}
-        {coordsInfo && <PreviousSearch data={coordsInfo} />}
+        <ScrollView>
+          {stateInfo && <PreviousSearch />}
+          {coordsInfo && <PreviousSearch />}
+        </ScrollView>
       </View>
     </View>
   );
@@ -92,7 +99,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFF",
-    marginTop: 60,
+    paddingTop: 20,
   },
   title: {
     textAlign: "left",

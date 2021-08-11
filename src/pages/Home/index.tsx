@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import * as Location from "expo-location";
+import { FontAwesome } from '@expo/vector-icons';
 
 import { API_KEY } from "@env";
 
@@ -10,10 +11,16 @@ import { ReloadIcon } from "../../components/ReloadIcon";
 import { WeatherDetails } from "../../components/WeatherDetails";
 
 import { colors } from "../../utils";
+import { NavigationProp, ParamListBase } from "@react-navigation/native";
+import { RectButton } from "react-native-gesture-handler";
 
 const baseURL = "https://api.openweathermap.org/data/2.5/weather";
 
-export function Home() {
+type RouteProps = {
+  navigation?: NavigationProp<ParamListBase>;
+}
+
+export function Home({navigation}: RouteProps) {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [currentWeather, setCurrentWeather] = useState<any>();
   const [unitsSystem, setUnitsSystem] = useState("metric");
@@ -60,6 +67,9 @@ export function Home() {
             <ReloadIcon load={load} />
             <WeatherInfo currentWeather={currentWeather} />
           </View>
+          <RectButton style={styles.searchIconContainer} onPress={() => navigation?.navigate('Search')} >
+            <FontAwesome name="search" size={28} color="#FFF" />
+          </RectButton>
           <WeatherDetails currentWeather={currentWeather} unitsSystem={unitsSystem} />
         </>
       )}
@@ -78,4 +88,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
   },
+  searchIconContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 50,
+    backgroundColor: colors.PRIMARY_COLOR,
+    bottom: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    left: 325
+  }
+
 });
