@@ -7,31 +7,13 @@ import { RectButton } from "react-native-gesture-handler";
 import { colors } from "../../utils";
 const { PRIMARY_COLOR, SECONDARY_COLOR, BORDER_COLOR } = colors;
 
-type RootState = {
-  data: {
-    results: [
-      {
-        components: { 
-          state: string
-          state_code: string
-          country: string 
-        },
-      },
-    ],
-  }
-};
+type PreviousSearchProps = {
+  state: string;
+  state_code: string;
+  country: string;
+}
 
-export function PreviousSearch() {
-  let data = useSelector((state: RootState) => state.data);
-
-  const {
-    results: [
-      {
-        components: { state, state_code, country },
-      },
-    ],
-  } = data;
-
+export function PreviousSearch({state, state_code, country}: PreviousSearchProps) {
   return (
     <View style={styles.container}>
       <View style={styles.stateContainer}>

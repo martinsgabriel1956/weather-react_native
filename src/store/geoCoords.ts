@@ -1,28 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 type GeoProps = {
-  data: any;
-}
+  locations: any;
+};
 
 const initialState: GeoProps = {
-  data: {}
-}
+  locations: [],
+};
 
 export const geoLocation = createSlice({
-  name: "geoLocation",
+  name: "location",
   initialState,
   reducers: {
     locationForSubmit(state, action) {
       const data = action.payload.data;
 
-      return data;
+      if (state.locations.length === 3) {
+        state.locations.shift();
+      }
+      state.locations.push(data);
     },
-    locationForCoords(state, action) {
-      const data = action.payload.data;
-
-      return data;
-    }
-  }
-})
+  },
+});
 
 export const geoActions = geoLocation.actions;

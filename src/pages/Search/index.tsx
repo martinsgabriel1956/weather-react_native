@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { View, Text, StyleSheet, TextInput, ScrollView } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { RectButton } from "react-native-gesture-handler";
@@ -15,8 +15,19 @@ import { GEO_API_KEY } from "@env";
 
 const baseURL = `https://api.opencagedata.com/geocode/v1/json`;
 
+type DefaultRootStates = {
+  location: {
+    locations: [
+      state: any,
+      state_code: any,
+      country: any,
+    ]
+  }
+}
+
 export function Search() {
   const dispatch = useDispatch();
+  const { locations } = useSelector((state: DefaultRootStates) => state.location);
 
   const [location, setLocation] = useState<string>();
   const [stateInfo, setStateInfo] = useState<any>();
@@ -29,8 +40,15 @@ export function Search() {
       const resData = await res.json();
 
       if (res.ok) {
-        setStateInfo(resData);
-        dispatch(geoActions.locationForSubmit({ data: stateInfo }));
+        dispatch(
+          geoActions.locationForSubmit({
+            data: {
+              state: location,
+              state_code: resData.results[0].components.state_code,
+              country: resData.results[0].components.country,
+            },
+          })
+        );
       }
     } catch (e) {
       return "Não carregou nada";
@@ -54,8 +72,15 @@ export function Search() {
       const resData = await res.json();
 
       if (res.ok) {
-        setCoordsInfo(resData);
-        dispatch(geoActions.locationForCoords({ data: coordsInfo }));
+        dispatch(
+          geoActions.locationForSubmit({
+            data: {
+              state: resData.results[0].components.state,
+              state_code: resData.results[0].components.state_code,
+              country: resData.results[0].components.country,
+            },
+          })
+        );
       }
     } catch (e) {
       return "Não carregou nada";
@@ -87,8 +112,9 @@ export function Search() {
       <View>
         <Text style={styles.textPreviousSearch}>Previous Searches</Text>
         <ScrollView>
-          {stateInfo && <PreviousSearch />}
-          {coordsInfo && <PreviousSearch />}
+          {locations.length > 0 && locations.map((location) => (
+            <PreviousSearch state={location.state} country={location.country} state_code={location.state_code} />
+          ))}
         </ScrollView>
       </View>
     </View>

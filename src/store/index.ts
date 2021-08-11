@@ -4,6 +4,6 @@ import { geoLocation } from './geoCoords';
 
 export const store = configureStore({
   reducer: {
-    geoCoords: geoLocation.reducer,
+    location: geoLocation.reducer,
   }
 })
